@@ -1,6 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>co.huggingface.llm-intellij</id>
+    <id>co.ollama.llm-intellij</id>
 
     <name>LLM</name>
 
@@ -30,13 +30,13 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <inline.completion.provider implementation="co.huggingface.llmintellij.LlmLsCompletionProvider"></inline.completion.provider>
-        <platform.lsp.serverSupportProvider implementation="co.huggingface.llmintellij.lsp.LlmLsServerSupportProvider"/>
+        <inline.completion.provider implementation="co.ollama.llmintellij.LlmLsCompletionProvider"></inline.completion.provider>
+<!--        <platform.lsp.serverSupportProvider implementation="co.ollama.llmintellij.lsp.LlmLsServerSupportProvider"/>-->
         <applicationConfigurable
                 parentId="tools"
-                instance="co.huggingface.llmintellij.LlmSettingsConfigurable"
-                id="co.huggingface.llmintellij.LlmSettingsConfigurable"
+                instance="co.ollama.llmintellij.LlmSettingsConfigurable"
+                id="co.ollama.llmintellij.LlmSettingsConfigurable"
                 displayName="LLM Settings"/>
-        <applicationService serviceImplementation="co.huggingface.llmintellij.LlmSettingsState"/>
+        <applicationService serviceImplementation="co.ollama.llmintellij.LlmSettingsState"/>
     </extensions>
 </idea-plugin>
