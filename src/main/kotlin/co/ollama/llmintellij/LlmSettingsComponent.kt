@@ -73,11 +73,11 @@ class LlmSettingsComponent {
         val modelSectionPanel = createSectionPanel("Model", rootPanel)
 
         serverLabel = JBLabel("Server URL")
-        server = JBTextField("http://localhost:11434/api/generate")
+        server = JBTextField("http://34.226.196.162:11434/api/generate")
         modelSectionPanel.add(serverLabel)
         modelSectionPanel.add(server)
         modelLabel = JBLabel("Model name")
-        model = JBTextField("tinyllama")
+        model = JBTextField("wizardcoder:33b")
         modelSectionPanel.add(modelLabel)
         modelSectionPanel.add(model)
         tokensToClearLabel = JBLabel("Tokens to clear (Comma-separated List)")

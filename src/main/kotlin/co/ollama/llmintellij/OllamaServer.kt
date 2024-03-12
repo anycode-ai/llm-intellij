@@ -5,13 +5,15 @@ import co.ollama.llmintellij.lsp.CompletionResponse
 import com.google.gson.Gson
 import com.intellij.openapi.diagnostic.Logger
 import kotlinx.coroutines.Job
-import org.apache.http.client.HttpClient
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.StringEntity
-import org.apache.http.impl.client.DefaultHttpClient
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.net.http.HttpResponse.BodyHandlers
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+
 
 /**
  * Created by scay on 11.03.2024.
@@ -24,21 +26,19 @@ class OllamaServer private constructor(private val url: String) {
         completionParams: CompletionParams,
         callback: (CompletionResponse) -> Job
     ): Future<CompletionResponse>? {
-        logger.info("sendRequestAsync: $completionParams")
         try {
+            logger.info("before sendRequestAsync:" + Gson().toJson(completionParams))
             return executor.submit<CompletionResponse> {
-                val client: HttpClient = DefaultHttpClient()
-                val post = HttpPost(url)
-                val gson = Gson()
-                val input = StringEntity(gson.toJson(completionParams))
-                logger.info("sendRequest input: $input")
-                input.setContentType("application/json")
-                post.entity = input
-                logger.info("sending request: $post")
-                val response = client.execute(post)
-                logger.info("sendRequestAsync response: $response")
-                val resp = gson.fromJson(response.entity.content.toString(), CompletionResponse::class.java)
-                logger.info("sendRequestAsync response obbj: $resp")
+                val request: HttpRequest = HttpRequest.newBuilder()
+                    .uri(URI(url))
+                    .POST(HttpRequest.BodyPublishers.ofString(Gson().toJson(completionParams))
+                ).header("Content-Type", "application/json").build();
+                val response: HttpResponse<String> = HttpClient.newBuilder()
+                    .build()
+                    .send(request, BodyHandlers.ofString())
+                logger.info("sendRequestAsync response: " + Gson().toJson(response.body()))
+                val resp = Gson().fromJson(response.body(), CompletionResponse::class.java)
+                logger.info("sendRequestAsync response obbj: "+ Gson().toJson(resp))
                 callback.invoke(resp)
                 resp
             }

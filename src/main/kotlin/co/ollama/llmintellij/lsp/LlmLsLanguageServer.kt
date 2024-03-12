@@ -17,6 +17,7 @@ class CompletionParams(
     val prompt: String,
     val model: String,
     val stream: Boolean = false,
+    val raw: Boolean = true,
 )
 
 @JsonSegment("llm-ls")
