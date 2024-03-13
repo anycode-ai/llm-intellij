@@ -35,14 +35,16 @@ class LlmLsCompletionProvider: InlineCompletionProvider {
                     val lineeEnd = request.document.getLineEndOffset(line)
                     val pre = request.editor.document.getText(TextRange(0, lineStart-1))
                     val suf = request.editor.document.getText(TextRange(lineeEnd, request.editor.document.textLength))
-                    val prompt = "<PRE>" + pre + "<SUF>" + suf + "<MID>"//request.editor.document.text//request.editor.document.getText(TextRange(lineStart, lineeEnd))//lspServer.requestExecutor.getDocumentIdentifier(request.file.virtualFile)
+                    val prompt = "<｜fim▁begin｜>" + pre + "<｜fim▁hole｜>" + suf + "<｜fim▁end｜>"//request.editor.document.text//request.editor.document.getText(TextRange(lineStart, lineeEnd))//lspServer.requestExecutor.getDocumentIdentifier(request.file.virtualFile)
                     logger.info("lsp ollama prompt: $prompt")
                     val params = CompletionParams(prompt= prompt, model = settings.model)
                     lspServer.sendRequestAsync(params) { response ->
                         logger.info("lsp ollama response: " + Gson().toJson(response))
                         CoroutineScope(Dispatchers.Default).launch {
                             if (response != null  && response.done == true) {
-                                var code = response.response.replace("</PRE>", "")
+                                var code = response.response.replace("<｜fim▁begin｜>", "")
+                                code = code.replace("<｜fim▁hole｜>", "")
+                                code = code.replace("<｜fim▁end｜>", "")
                                 send(InlineCompletionElement(code))
                             }
                         }

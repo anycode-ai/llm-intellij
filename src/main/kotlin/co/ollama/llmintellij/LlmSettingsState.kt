@@ -40,8 +40,8 @@ sealed class TokenizerConfig {
 )
 class LlmSettingsState: PersistentStateComponent<LlmSettingsState?> {
     var ghostTextEnabled = true
-    var server: String = "http://34.226.196.162:11434/api/generate"
-    var model: String = "wizardcoder:33b"
+    var server: String = "http://52.90.150.209:11434/api/generate"
+    var model: String = "deepseek-coder:33b-base"
     var tokensToClear: List<String> = listOf("<|endoftext|>")
     var queryParams = QueryParams()
     var fim = FimParams()
